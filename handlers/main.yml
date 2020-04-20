@@ -1,3 +1,7 @@
 ---
 - name: restart docker
   service: "name=docker state={{ docker_restart_handler_state }}"
+
+#Used command instead to service because auditd doesn't stop with service restart (see https://stackoverflow.com/questions/41053331/ansible-how-to-restart-auditd-service-on-centos-7-get-error-about-dependency)
+- name: restart auditd
+  command: "service auditd restart"

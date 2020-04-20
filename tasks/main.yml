@@ -17,6 +17,25 @@
     state: "{{ docker_service_state }}"
     enabled: "{{ docker_service_enabled }}"
 
+- name: Copy Docker daemon.json file
+  copy:
+      src: files/daemon.json
+      dest: /etc/docker/daemon.json
+  when: cis|bool 
+
+- name: Copu audit.rule and restart auditd service
+  copy:
+      src: files/audit.rules
+      dest: /etc/audit/audit.rules
+  notify: restart auditd
+  when: cis|bool
+
+- name: Copy fips-module.conf
+  copy:
+      src: files/fips-module.conf
+      dest: /etc/systemd/system/docker.service.d/fips-module.conf
+  when: docker_edition == 'ee'
+
 - name: Ensure handlers are notified now to avoid firewall conflicts.
   meta: flush_handlers
 
