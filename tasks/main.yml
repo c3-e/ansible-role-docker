@@ -5,6 +5,11 @@
 - include_tasks: setup-Debian.yml
   when: ansible_os_family == 'Debian'
 
+- name: Check if mandatory variables are defined
+  assert:
+    that:
+      - " docker_mount_dir is not none and docker_mount_dir is defined"
+
 - name: Install Docker.
   package:
     name: "{{ docker_package }}"
@@ -17,24 +22,32 @@
     state: "{{ docker_service_state }}"
     enabled: "{{ docker_service_enabled }}"
 
-- name: Copy Docker daemon.json file
+- name: Copy Docker daemon.json file - Docker Configuration requirements CIS section 1
   copy:
       src: files/daemon.json
       dest: /etc/docker/daemon.json
-  when: cis|bool 
+  when: cis | bool 
 
-- name: Copu audit.rule and restart auditd service
+- name: Copu audit.rule and restart auditd service - Docker Configuration requirements CIS section 2
   copy:
       src: files/audit.rules
       dest: /etc/audit/audit.rules
   notify: restart auditd
-  when: cis|bool
+  when: cis | bool
 
-- name: Copy fips-module.conf
+- name: Copy fips-module.conf - Configure Docker daemon to use FIPS 140-2 cryptographic module
   copy:
       src: files/fips-module.conf
       dest: /etc/systemd/system/docker.service.d/fips-module.conf
   when: docker_edition == 'ee'
+
+- name: check if there's a dedicated mount for docker
+  mount:
+      path: "{{ docker_mount_dir }}"
+      src: "{{ docker_device_src }}"
+      state: present
+      fstype: xfs
+  when: cis | bool
 
 - name: Ensure handlers are notified now to avoid firewall conflicts.
   meta: flush_handlers
