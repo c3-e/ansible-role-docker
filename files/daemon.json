@@ -1,0 +1,15 @@
+{
+"icc": false,
+"log-level": "info",
+"iptables": true,
+"default-ulimits": {
+		"nofile": {
+			"Name": "nofile",
+			"Hard": 64000,
+			"Soft": 64000
+		}
+	},
+"live-restore": true,
+"userland-proxy": false,
+"no-new-privileges": true
+}

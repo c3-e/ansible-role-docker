@@ -8,6 +8,8 @@ docker_package_state: present
 docker_service_state: started
 docker_service_enabled: true
 docker_restart_handler_state: restarted
+docker_mount_dir: /var/lib/docker
+docker_device_src: /dev/nvme1n1
 
 # Docker Compose options.
 docker_install_compose: true
@@ -29,3 +31,6 @@ docker_yum_gpg_key: https://download.docker.com/linux/centos/gpg
 
 # A list of users who will be added to the docker group.
 docker_users: []
+
+#Set this variable to true to enable CIS compliance
+cis: true
