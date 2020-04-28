@@ -26,14 +26,14 @@
   copy:
       src: files/daemon.json
       dest: /etc/docker/daemon.json
-  when: cis | bool 
+  when: docker_cis | bool 
 
 - name: Copu audit.rule and restart auditd service - Docker Configuration requirements CIS section 2
   copy:
       src: files/audit.rules
       dest: /etc/audit/audit.rules
   notify: restart auditd
-  when: cis | bool
+  when: docker_cis | bool
 
 - name: Copy fips-module.conf - Configure Docker daemon to use FIPS 140-2 cryptographic module
   copy:
@@ -47,7 +47,7 @@
       src: "{{ docker_device_src }}"
       state: present
       fstype: xfs
-  when: cis | bool
+  when: docker_cis | bool
 
 - name: Ensure handlers are notified now to avoid firewall conflicts.
   meta: flush_handlers

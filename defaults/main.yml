@@ -33,4 +33,4 @@ docker_yum_gpg_key: https://download.docker.com/linux/centos/gpg
 docker_users: []
 
 #Set this variable to true to enable CIS compliance
-cis: true
+docker_cis: true
