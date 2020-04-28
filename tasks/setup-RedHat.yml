@@ -11,6 +11,15 @@
   rpm_key:
     key: "{{ docker_yum_gpg_key }}"
     state: present
+  when: docker_edition == 'ce'
+
+- name: Add Docker EE URL into yum (Only for Docker EE)
+  shell: 'echo {{ docker_ee_url }} > /etc/yum/vars/dockerurl'
+  when: docker_edition == 'ee'
+
+- name: Store OS version into dockerversion file (Only for Docker EE)
+  shell: 'echo {{ docker_rhat_version }} > /etc/yum/vars/dockerosversion'
+  when: docker_edition == 'ee'
 
 - name: Add Docker repository.
   get_url:
@@ -19,6 +28,16 @@
     owner: root
     group: root
     mode: 0644
+  when: docker_edition == 'ce'
+
+- name: Add Docker enterprise repository
+  get_url:
+    url: "{{ docker_ee_repo_url }}"
+    dest: '/etc/yum.repos.d/docker-{{ docker_edition }}.repo'
+    owner: root
+    group: root
+    mode: 0644
+  when: docker_edition == 'ee'
 
 - name: Configure Docker Edge repo.
   ini_file:
@@ -46,3 +65,7 @@
     section: rhui-rhel-7-server-rhui-extras-rpms
     option: enabled
     value: '1'
+
+- name: Reload yum cache (Only for Docker EE)
+  shell: 'yum makecache fast'
+  when: docker_edition == 'ee'
