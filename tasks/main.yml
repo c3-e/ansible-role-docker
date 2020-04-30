@@ -31,7 +31,7 @@
 - name: Copy audit.rule and restart auditd service - Docker Configuration requirements CIS section 2
   copy:
       src: files/audit.rules
-      dest: /etc/audit/audit.rules
+      dest: /etc/audit/rules.d/docker.rules
   notify: restart auditd
   when: docker_cis | bool
 
