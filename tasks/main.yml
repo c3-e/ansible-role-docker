@@ -26,12 +26,12 @@
   copy:
       src: files/daemon.json
       dest: /etc/docker/daemon.json
-  when: docker_cis | bool 
+  when: docker_cis | bool
 
 - name: Copy audit.rule and restart auditd service - Docker Configuration requirements CIS section 2
   copy:
       src: files/audit.rules
-      dest: /etc/audit/audit.rules
+      dest: /etc/audit/rules.d/docker.rules
   notify: restart auditd
   when: docker_cis | bool
 
@@ -50,7 +50,7 @@
   copy:
       src: files/fips-module.conf
       dest: /etc/systemd/system/docker.service.d/fips-module.conf
-  when: 
+  when:
       - docker_edition == 'ee'
       - fipsEnabled.stdout == '0'
 
