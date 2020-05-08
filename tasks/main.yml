@@ -22,48 +22,8 @@
     state: "{{ docker_service_state }}"
     enabled: "{{ docker_service_enabled }}"
 
-- name: Copy Docker daemon.json file - Docker Configuration requirements CIS section 1
-  copy:
-      src: files/daemon.json
-      dest: /etc/docker/daemon.json
+- include_tasks: docker-CisCompliance.yml
   when: docker_cis | bool
-
-- name: Copy audit.rule and restart auditd service - Docker Configuration requirements CIS section 2
-  copy:
-      src: files/audit.rules
-      dest: /etc/audit/rules.d/docker.rules
-  notify: restart auditd
-  when: docker_cis | bool
-
-- name: Check if fips is enabled (Only for Docker EE)
-  shell: 'cat /proc/sys/crypto/fips_enabled'
-  register: fipsEnabled
-
-- name: Create directory docker.service.d if fips is not enabled (Only for Docker EE)
-  file:
-       path: '/etc/systemd/system/docker.service.d'
-       state: directory
-       mode: '0755'
-  when: docker_edition == 'ee' 
-
-- name: If fips is not enabled, copy fips-module.conf - Configure Docker daemon to use FIPS 140-2 cryptographic module(only for Docker EE)
-  copy:
-      src: files/fips-module.conf
-      dest: /etc/systemd/system/docker.service.d/fips-module.conf
-  when:
-      - docker_edition == 'ee'
-      - fipsEnabled.stdout == '0'
-
-- name: check if there's a dedicated mount for docker
-  mount:
-      path: "{{ docker_mount_dir }}"
-      src: "{{ docker_device_src }}"
-      state: present
-      fstype: "{{ docker_fs_type }}"
-  when: docker_cis | bool
-
-- name: reload docker configuration 
-  shell: 'systemctl daemon-reload'
 
 - name: Ensure handlers are notified now to avoid firewall conflicts.
   meta: flush_handlers

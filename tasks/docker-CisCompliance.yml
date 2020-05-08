@@ -1,0 +1,33 @@
+- name: Copy Docker daemon.json file - Docker Configuration requirements CIS section 1
+  copy:
+      src: files/daemon.json
+      dest: /etc/docker/daemon.json
+
+- name: Copy audit.rule and restart auditd service - Docker Configuration requirements CIS section 2
+  copy:
+      src: files/audit.rules
+      dest: /etc/audit/rules.d/docker.rules
+  notify: restart auditd
+
+- name: Check if fips is enabled (Only for Docker EE)
+  shell: 'cat /proc/sys/crypto/fips_enabled'
+  register: fipsEnabled
+  when: docker_edition == 'ee'
+
+- name: Create directory docker.service.d if fips is not enabled (Only for Docker EE)
+  file:
+       path: '/etc/systemd/system/docker.service.d'
+       state: directory
+       mode: '0755'
+  when: docker_edition == 'ee' and fipsEnabled == '0'
+
+- name: check if there's a dedicated mount for docker
+  mount:
+      path: "{{ docker_mount_dir }}"
+      src: "{{ docker_device_src }}"
+      state: present
+      fstype: "{{ docker_fs_type }}"
+  ignore_errors: yes
+
+- name: reload docker configuration 
+  shell: 'systemctl daemon-reload'
