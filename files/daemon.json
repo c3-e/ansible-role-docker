@@ -1,15 +1,21 @@
 {
-"icc": false,
-"log-level": "info",
-"iptables": true,
-"default-ulimits": {
-		"nofile": {
-			"Name": "nofile",
-			"Hard": 64000,
-			"Soft": 64000
-		}
-	},
-"live-restore": true,
-"userland-proxy": false,
-"no-new-privileges": true
+  "icc": false,
+  "log-level": "info",
+  "iptables": true,
+  "selinux-enabled": true,
+  "default-ulimits": {
+    "nofile": {
+      "Name": "nofile",
+      "Hard": 64000,
+      "Soft": 64000
+    },
+    "nproc": {
+      "Name": "nproc",
+      "Hard": 4096,
+      "Soft": 4096
+    }
+  },
+  "live-restore": true,
+  "userland-proxy": false,
+  "no-new-privileges": true
 }
