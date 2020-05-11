@@ -38,3 +38,9 @@ docker_users: []
 
 #Set this variable to true to enable CIS compliance
 docker_cis: false
+
+docker_redhat_extra_rpm_repos:
+  - dest: redhat-rhui
+    section: rhel-7-server-rhui-extras-rpms
+    option: enabled
+    value: '1'
