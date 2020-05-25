@@ -10,11 +10,16 @@
     that:
       - " docker_mount_dir is not none and docker_mount_dir is defined"
 
-- name: Install Docker.
+- name: Install Docker (online mode).
   package:
     name: "{{ docker_package }}"
     state: "{{ docker_package_state }}"
   notify: restart docker
+  when: offline_mode == '1'
+
+- include_tasks: docker-offline-inst.yml
+  when: offline_mode == '0'
+
 
 - name: Ensure Docker is started and enabled at boot.
   service:
@@ -29,7 +34,10 @@
   meta: flush_handlers
 
 - include_tasks: docker-compose.yml
-  when: docker_install_compose | bool
+  when: docker_install_compose | bool and offline_mode == '1'
+
+- include_tasks: docker-compose-offline-inst.yml
+  when: docker_install_compose | bool and offline_mode == '0'
 
 - include_tasks: docker-users.yml
   when: docker_users | length > 0

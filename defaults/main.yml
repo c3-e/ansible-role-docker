@@ -1,5 +1,5 @@
 ---
-# Edition can be one of: 'ce' (Community Edition) or 'ee' (Enterprise Edition).
+# Edition can be one of: 'ce' (Community Edition) or 'ee' (Enterprise Edition). ONLY for online installation
 docker_edition: 'ce'
 docker_package: "docker-{{ docker_edition }}"
 docker_package_state: present
@@ -12,19 +12,19 @@ docker_mount_dir: /var/lib/docker
 docker_device_src: /dev/nvme1n1
 docker_fs_type: xfs
 
-# Docker Compose options.
+# Docker Compose options, ONLY for online installation
 docker_install_compose: true
 docker_compose_version: "1.25.4"
 docker_compose_path: /usr/local/bin/docker-compose
 
-# Used only for Debian/Ubuntu. Switch 'stable' to 'edge' if needed.
+# Used only for Debian/Ubuntu. Switch 'stable' to 'edge' if needed. ONLY for online installation
 docker_apt_release_channel: stable
 docker_apt_arch: amd64
 docker_apt_repository: "deb [arch={{ docker_apt_arch }}] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
 docker_apt_ignore_key_error: true
 docker_apt_gpg_key: https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg
 
-# Used only for RedHat/CentOS/Fedora.
+# Used only for RedHat/CentOS/Fedora. Only for online installation
 docker_yum_repo_url: https://download.docker.com/linux/{{ (ansible_distribution == "Fedora") | ternary("fedora","centos") }}/docker-{{ docker_edition }}.repo
 docker_yum_repo_enable_edge: '0'
 docker_yum_repo_enable_test: '0'
@@ -38,3 +38,8 @@ docker_users: []
 
 #Set this variable to true to enable CIS compliance
 docker_cis: false
+
+#Set this variable to enable offline installation (0 for offline mode, 1 for online mode), for offline mode please provide a tar file (name docker.tar for Docker and dockerCm.tar for docker compose) that contains all rpm packages and place it under files directory 
+offline_mode: '1'
+docker_dest_dir: /usr/local/share/dockerPkg
+docker_comp_dest_dir: /usr/local/share/dockerCmPkg

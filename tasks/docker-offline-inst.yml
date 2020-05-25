@@ -1,0 +1,22 @@
+---
+- name: Create the directory where rpm will be copied
+  file:
+    path: "{{ docker_dest_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Copy docker tar on target machine
+  copy:
+      src: files/docker.tar
+      dest: "{{ docker_dest_dir }}"
+
+- name: unpack docker tar
+  shell: tar -xvf docker.tar
+  args:
+    chdir: "{{ docker_dest_dir }}"
+
+- name: try to install docker offline
+  shell: rpm -ivh --replacefiles --replacepkgs *.rpm
+  args:
+    chdir: "{{ docker_dest_dir }}"
+  ignore_errors: yes
