@@ -13,7 +13,7 @@ docker_device_src: /dev/nvme1n1
 docker_fs_type: xfs
 
 # Docker Compose options, ONLY for online installation
-docker_install_compose: true
+docker_install_compose: false
 docker_compose_version: "1.25.4"
 docker_compose_path: /usr/local/bin/docker-compose
 
@@ -39,7 +39,7 @@ docker_users: []
 #Set this variable to true to enable CIS compliance
 docker_cis: false
 
-#Set this variable to enable offline installation (0 for offline mode, 1 for online mode), for offline mode please provide a tar file (name docker.tar for Docker and dockerCm.tar for docker compose) that contains all rpm packages and place it under files directory 
-offline_mode: '1'
+#Set this variable to enable offline installation. For offline mode please provide a tar file (name docker.tar for Docker and dockerCm.tar for docker compose) that contains all rpm packages and place it under files directory 
+offline_mode: true
 docker_dest_dir: /usr/local/share/dockerPkg
 docker_comp_dest_dir: /usr/local/share/dockerCmPkg
