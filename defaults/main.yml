@@ -9,7 +9,7 @@ docker_service_state: started
 docker_service_enabled: true
 docker_restart_handler_state: restarted
 docker_mount_dir: /var/lib/docker
-docker_device_src: /dev/nvme1n1
+docker_device_src: /dev/xvdf
 docker_fs_type: xfs
 
 # Docker Compose options
@@ -39,8 +39,16 @@ docker_users: []
 # Set this variable to true to enable CIS compliance
 docker_cis: false
 
-# Set this variable to enable offline installation. For offline mode please provide a tar file (name docker.tar for Docker and dockerCm.tar for docker compose) that contains all rpm packages and place it under files directory 
+docker_redhat_extra_rpm_repos:
+  - dest: redhat-rhui
+    section: rhel-7-server-rhui-extras-rpms
+    option: enabled
+    value: '1'
+
+# Set these variables to enable offline installation. 
 offline_mode: true
+# For offline mode, please provide a tar file of rpms for RHEL docker installation
 docker_rpms_src_tar: files/docker-rpms.tgz
 docker_rpms_dest_dir: /usr/local/share/docker-rpms
+# For offline mode, please provide a docker-compose binary for RHEL docker-compose installation
 docker_compose_src_bin: files/docker-compose-bin

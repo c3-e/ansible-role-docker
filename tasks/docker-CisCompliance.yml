@@ -21,6 +21,11 @@
        mode: '0755'
   when: docker_edition == 'ee' and fipsEnabled == '0'
 
+- name: "Create a {{ docker_fs_type }} filesystem on {{ docker_device_src }}"
+  filesystem:
+    fstype: "{{ docker_fs_type }}"
+    dev: "{{ docker_device_src }}"
+
 - name: check if there's a dedicated mount for docker
   mount:
       path: "{{ docker_mount_dir }}"
