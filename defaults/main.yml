@@ -12,9 +12,9 @@ docker_mount_dir: /var/lib/docker
 docker_device_src: /dev/nvme1n1
 docker_fs_type: xfs
 
-# Docker Compose options, ONLY for online installation
-docker_install_compose: false
-docker_compose_version: "1.25.4"
+# Docker Compose options
+docker_install_compose: true
+docker_compose_version: "1.25.5"
 docker_compose_path: /usr/local/bin/docker-compose
 
 # Used only for Debian/Ubuntu. Switch 'stable' to 'edge' if needed. ONLY for online installation
@@ -36,10 +36,11 @@ docker_rhat_version: '7'
 # A list of users who will be added to the docker group.
 docker_users: []
 
-#Set this variable to true to enable CIS compliance
+# Set this variable to true to enable CIS compliance
 docker_cis: false
 
-#Set this variable to enable offline installation. For offline mode please provide a tar file (name docker.tar for Docker and dockerCm.tar for docker compose) that contains all rpm packages and place it under files directory 
+# Set this variable to enable offline installation. For offline mode please provide a tar file (name docker.tar for Docker and dockerCm.tar for docker compose) that contains all rpm packages and place it under files directory 
 offline_mode: true
-docker_dest_dir: /usr/local/share/dockerPkg
-docker_comp_dest_dir: /usr/local/share/dockerCmPkg
+docker_rpms_src_tar: files/docker-rpms.tgz
+docker_rpms_dest_dir: /usr/local/share/docker-rpms
+docker_compose_src_bin: files/docker-compose-bin

@@ -1,0 +1,28 @@
+---
+- name: Check if Docker is already installed
+  stat: 
+    path: /usr/bin/docker
+  register: docker_path
+
+- name: Create the directory where Docker rpm will be copied
+  file:
+    path: "{{ docker_rpms_dest_dir }}"
+    state: directory
+    mode: '0755'
+  when: not docker_path.stat.exists
+
+- name: Unpack docker-rpms archive
+  unarchive: 
+    src: "{{ docker_rpms_src_tar }}"
+    dest: "{{ docker_rpms_dest_dir }}"
+    remote_src: no
+  when: not docker_path.stat.exists
+
+- name: Install Docker with local dependencies
+  command: rpm -ivh --replacefiles --replacepkgs *.rpm
+  args:
+    chdir: "{{ docker_rpms_dest_dir }}"
+    # added to suppress warning for explicitly calling rpm instead of module
+    warn: false
+  when: not docker_path.stat.exists
+  notify: restart docker
