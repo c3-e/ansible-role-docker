@@ -11,15 +11,15 @@
   rpm_key:
     key: "{{ docker_yum_gpg_key }}"
     state: present
-  when: docker_edition == 'ce' and offline_mode == '1'
+  when: docker_edition == 'ce'
 
 - name: Add Docker EE URL into yum (Only for Docker EE)
   shell: 'echo {{ docker_ee_url }} > /etc/yum/vars/dockerurl'
-  when: docker_edition == 'ee' and offline_mode == '1'
+  when: docker_edition == 'ee'
 
 - name: Store OS version into dockerversion file (Only for Docker EE)
   shell: 'echo {{ docker_rhat_version }} > /etc/yum/vars/dockerosversion'
-  when: docker_edition == 'ee' and offline_mode == '1'
+  when: docker_edition == 'ee'
 
 - name: Add Docker repository.
   get_url:
@@ -28,7 +28,7 @@
     owner: root
     group: root
     mode: 0644
-  when: docker_edition == 'ce' and offline_mode == '1'
+  when: docker_edition == 'ce'
 
 - name: Add Docker enterprise repository
   get_url:
@@ -37,7 +37,7 @@
     owner: root
     group: root
     mode: 0644
-  when: docker_edition == 'ee' and offline_mode == '1'
+  when: docker_edition == 'ee'
 
 - name: Configure Docker Edge repo.
   ini_file:
@@ -45,7 +45,6 @@
     section: 'docker-{{ docker_edition }}-edge'
     option: enabled
     value: '{{ docker_yum_repo_enable_edge }}'
-  when: offline_mode == '1'
 
 - name: Configure Docker Test repo.
   ini_file:
@@ -53,7 +52,6 @@
     section: 'docker-{{ docker_edition }}-test'
     option: enabled
     value: '{{ docker_yum_repo_enable_test }}'
-  when: offline_mode == '1'
 
 - name: Install containerd separately (CentOS 8).
   package:
@@ -61,14 +59,15 @@
     state: present
   when: ansible_distribution_major_version | int == 8
 
-- name: Enable extra repository for RHEL
+- name: Enable extra repositories
   ini_file:
-    dest: /etc/yum.repos.d/redhat-rhui.repo
-    section: rhui-rhel-7-server-rhui-extras-rpms
-    option: enabled
-    value: '1'
-  when: offline_mode == '1'
+    dest: "/etc/yum.repos.d/{{ item.dest }}.repo"
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+  - "{{ docker_redhat_extra_rpm_repos }}"
 
 - name: Reload yum cache (Only for Docker EE)
   shell: 'yum makecache fast'
-  when: docker_edition == 'ee' and offline_mode == '1'
+  when: docker_edition == 'ee'
