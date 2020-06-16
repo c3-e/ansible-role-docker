@@ -1,0 +1,6 @@
+---
+- name: Install Docker (online mode).
+  package:
+    name: "{{ docker_package }}"
+    state: "{{ docker_package_state }}"
+  notify: restart docker
