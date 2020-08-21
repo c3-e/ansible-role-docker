@@ -59,14 +59,13 @@
     state: present
   when: ansible_distribution_major_version | int == 8
 
-- name: Enable extra repositories
-  ini_file:
-    dest: "/etc/yum.repos.d/{{ item.dest }}.repo"
-    section: "{{ item.section }}"
-    option: "{{ item.option }}"
-    value: "{{ item.value }}"
-  with_items:
-  - "{{ docker_redhat_extra_rpm_repos }}"
+- name: Enable extra repositories (AWS)
+  command: yum-config-manager --enable rhel-7-server-rhui-extras-rpms
+  when: infra == 'aws'
+
+- name: Enable extra repositories (AZURE)
+  command: yum-config-manager --enable rhel-7-server-extras-rpms
+  when: infra == 'azure'
 
 - name: Reload yum cache (Only for Docker EE)
   shell: 'yum makecache fast'

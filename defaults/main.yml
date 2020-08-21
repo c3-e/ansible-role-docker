@@ -39,12 +39,6 @@ docker_users: []
 # Set this variable to true to enable CIS compliance
 docker_cis: false
 
-docker_redhat_extra_rpm_repos:
-  - dest: redhat-rhui
-    section: rhel-7-server-rhui-extras-rpms
-    option: enabled
-    value: '1'
-
 # Set these variables to enable offline installation. 
 offline_mode: true
 # For offline mode, please provide a tar file of rpms for RHEL docker installation
@@ -52,3 +46,7 @@ docker_rpms_src_tar: files/docker-rpms.tgz
 docker_rpms_dest_dir: /usr/local/share/docker-rpms
 # For offline mode, please provide a docker-compose binary for RHEL docker-compose installation
 docker_compose_src_bin: files/docker-compose-bin
+
+#For selecting the correct RH extra repo, please populate with the cloud provider where the playbook will be executed
+#Values allowed: aws, azure
+infra: aws
