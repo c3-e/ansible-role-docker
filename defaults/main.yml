@@ -40,7 +40,7 @@ docker_users: []
 docker_cis: false
 
 # Set these variables to enable offline installation. 
-offline_mode: true
+offline_mode: false
 # For offline mode, please provide a tar file of rpms for RHEL docker installation
 docker_rpms_src_tar: files/docker-rpms.tgz
 docker_rpms_dest_dir: /usr/local/share/docker-rpms
@@ -49,4 +49,4 @@ docker_compose_src_bin: files/docker-compose-bin
 
 #For selecting the correct RH extra repo, please populate with the cloud provider where the playbook will be executed
 #Values allowed: aws, azure
-infra: aws
+infra: azure
