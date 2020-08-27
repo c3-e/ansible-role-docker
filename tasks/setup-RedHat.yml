@@ -45,6 +45,7 @@
     section: 'docker-{{ docker_edition }}-edge'
     option: enabled
     value: '{{ docker_yum_repo_enable_edge }}'
+  when: docker_yum_repo_enable_edge | bool
 
 - name: Configure Docker Test repo.
   ini_file:
@@ -52,6 +53,7 @@
     section: 'docker-{{ docker_edition }}-test'
     option: enabled
     value: '{{ docker_yum_repo_enable_test }}'
+  when: docker_yum_repo_enable_test | bool
 
 - name: Install containerd separately (CentOS 8).
   package:
@@ -60,13 +62,9 @@
   when: ansible_distribution_major_version | int == 8
 
 - name: Enable extra repositories (AWS)
-  command: yum-config-manager --enable rhel-7-server-rhui-extras-rpms
+  command: yum-config-manager --enable rhui-rhel-7-server-rhui-extras-rpms
   when: infra == 'aws'
 
 - name: Enable extra repositories (AZURE)
   command: yum-config-manager --enable rhel-7-server-extras-rpms
   when: infra == 'azure'
-
-- name: Reload yum cache (Only for Docker EE)
-  shell: 'yum makecache fast'
-  when: docker_edition == 'ee'
