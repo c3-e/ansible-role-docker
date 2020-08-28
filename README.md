@@ -45,11 +45,11 @@ You can change `docker_apt_gpg_key` to a different url if you are behind a firew
 Usually in combination with changing `docker_apt_repository` as well.
 
     docker_yum_repo_url: https://download.docker.com/linux/centos/docker-{{ docker_edition }}.repo
-    docker_yum_repo_enable_edge: '0'
-    docker_yum_repo_enable_test: '0'
+    docker_yum_repo_enable_edge: false
+    docker_yum_repo_enable_test: false
     docker_yum_gpg_key: https://download.docker.com/linux/centos/gpg
 
-(Used only for RedHat/CentOS.) You can enable the Edge or Test repo by setting the respective vars to `1`.
+(Used only for RedHat/CentOS.) You can enable the Edge or Test repo by setting the respective vars to `true`.
 
 You can change `docker_yum_gpg_key` to a different url if you are behind a firewall or provide a trustworthy mirror.
 Usually in combination with changing `docker_yum_repository` as well.
@@ -59,6 +59,11 @@ Usually in combination with changing `docker_yum_repository` as well.
       - user2
 
 A list of system users to be added to the `docker` group (so they can use Docker on the server).
+
+Variable added:
+
+    infra: specify your cloud provider, allowed values are aws for AWS and azure for AZURE. Default is aws.
+
 
 ## Use with Ansible (and `docker` Python library)
 
